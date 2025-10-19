@@ -11,19 +11,15 @@ app.use(express.json());
 
 const User = require("./models/User");
 
-// Test route
 app.get("/", (req, res) => {
   res.send("Backend is running!");
 });
 
-// GET all users
 // GET top N users
 app.get("/users", async (req, res) => {
   try {
-    // Get 'n' from query string, default to 10
     const n = parseInt(req.query.n) || 10;
 
-    // Find users, sort descending by score, limit to N
     const users = await User.find()
       .sort({ score: -1 }) 
       .limit(n);
@@ -55,6 +51,29 @@ app.put("/users/:id", async (req, res) => {
     res.json(updatedUser);
   } catch (err) {
     console.error("Update error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+// get 'range' users above and below a specific user
+app.get("/users/:id/around", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const range = parseInt(req.query.range) || 5;
+
+    const targetUser = await User.findById(id);
+    if (!targetUser) return res.status(404).json({ message: "User not found" });
+
+    const above = await User.find({ score: { $gt: targetUser.score } })
+      .sort({ score: 1 }) 
+      .limit(range);
+
+    const below = await User.find({ score: { $lt: targetUser.score } })
+      .sort({ score: -1 }) 
+      .limit(range);
+
+    res.json({ above, user: targetUser, below });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 });

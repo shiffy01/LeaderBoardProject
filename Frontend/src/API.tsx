@@ -1,18 +1,4 @@
-/**
 
-
-
-
-
-explain why to use mongo and not postgres
-5 on top 5 on bottom:
-simply take from sorted list??
-
-
-
-readme
-github
- */
 export interface User {
   _id: string;
   name: string;
@@ -53,5 +39,11 @@ export async function updateUser(id: string, updatedFields: Partial<User>): Prom
   if (!res.ok) throw new Error("Failed to update user");
   return res.json();
 }
+export async function getFiveUnderOver(id: string) {
+  const response = await fetch(`${BASE_URL}/users/${id}/around?range=5`);
+  const data = await response.json();
+  return [...data.above.reverse(), data.user, ...data.below];
+}
+
 
 

@@ -7,15 +7,14 @@ interface TopUsersProps {
   users: User[];
 }
 
-const crownColors = ["#FFD700", "#C0C0C0", "#CD7F32"]; // gold, silver, bronze
+const crownColors = ["#FFD700", "#C0C0C0", "#CD7F32"];
 
 const TopUsers: React.FC<TopUsersProps> = ({ users }) => {
-  // Reorder users so #1 is in the middle
   const podiumOrder = users.length === 3 ? [1, 0, 2] : users.map((_, i) => i);
 
-  const sizes = [150, 180, 150]; // width of cards, middle one bigger
-  const avatarSizes = [60, 80, 60]; // avatar size
-  const crownSizes = [32, 40, 32]; // crown icon size
+  const sizes = [150, 180, 150]; 
+  const avatarSizes = [60, 80, 60];
+  const crownSizes = [32, 40, 32];
 
   return (
     <Box
